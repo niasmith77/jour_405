@@ -1,5 +1,6 @@
 ---
 title: "HW4 MD CityCrime"
+Nia Smith
 ---
 
 In this assignment, we will be working with a dataset of total crimes reported by Maryland cities for two consecutive years. You'll load the data, calculate the violent and property crime rates for each city for both years, and then calculate the percentage change in the crime rates between the two years. You'll also write a short story based on your findings.
