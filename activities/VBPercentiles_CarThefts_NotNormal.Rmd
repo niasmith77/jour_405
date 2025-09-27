@@ -2,6 +2,7 @@
 title: "Data Distribution, Volleyball Percentiles, Car Thefts, "
 author: "Derek Willis /Rob Wells"
 date: 09-23-2025
+Nia Smith
 ---
 
 This workbook contains three exercises for our class. Complete them and hand it in at the end of class via a GitHub link.
@@ -20,7 +21,12 @@ First, come up with two examples of data that might not be normally distributed 
 
 Then, how should a reporter working on a story about data that isn't normally distributed describe that data? Which statistical measures that we've covered in class should they use or avoid when doing so? Use the examples you came up with, and you should discuss your answers together, but each student submits separately.
 
-**Your answer**:
+
+1. Social Media...If you were to track a study of younger generations social media usage on an app and they use Facebook instead of one that is more common with younger generations, such as Instagram or TikTok
+
+2. Gathering data about students who are commuters versus live on campus. If you do this data here as a state school you would find more data capturing commuters, whereas with a private school you might see completly different data supporting the other side.
+
+When a reporter is working on a story they have to explicitly state the conditions the data was gathered in so that readers known exactly what and who they collected from. A statistical meausure they should use is margin of error where as one they should avoid is relying heavily on the mean. For example, if we focus primarily on the mean for example 2, there would be a false narritive protrayed from the data. You can also focus on median instead of mean.
 
 
 
@@ -64,7 +70,7 @@ team_aces |> mutate(percentile = ntile(total_aces, 100))
 
 Write a couple of sentences that puts Maryland into context with the other teams in the dataset. You can do some Internet research to help with this.
 
-**Answer**:
+Compared to other teams, Maryland is in the 95th percentile in terms of total aces. This means that 5% of other teams scores are higher than Maryland. Being this high in the percentile means that they are scoring more aces than 95% of other teams, but falls short of 5% of other teams 
 
 
 #------------------------------------------------------------------------------#
@@ -76,6 +82,7 @@ Follow along with the demo to learn how to calculate standard deviation and how 
 ### Task 1: Load the tidyverse
 
 ```{r}
+library(tidyverse)
 
 ```
 
@@ -122,7 +129,7 @@ car_thefts |>
 Is the distribution normal or skewed in one direction? Write a sentence in which you describe the range of the data covered by one standard deviation from the mean on both sides - how much of the data falls in that range?
 
 
-**Answer**:
+The data is skewed more to the left. About 68% of the data falls within the first standard deviation.
 
 
 
