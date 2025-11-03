@@ -4,7 +4,7 @@ author: "Derek Willis/Rob Wells"
 date: 10-27-2025
 ---
 
-name: Nia Smith
+name: REPLACE WITH YOUR NAME
 
 
 Your editor wants to know if there have been recent changes in the number of car thefts in Prince George's County. Using monthly figures and significance testing, you'll come up with an answer and decide whether there's a story here. As with the previous homework, provide answers in this notebook when prompted and you will have to fill in values where you see REPLACE_ME. Get started by loading the tidyverse in a new R block.
@@ -14,7 +14,6 @@ Your editor wants to know if there have been recent changes in the number of car
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # LOAD THE TIDYVERSE
-library(tidyverse)
 ```
 
 
@@ -58,7 +57,7 @@ ggplot(aes(x = month, y = total)) +
 
 **Q3:** What's your initial reaction to the change in car thefts? Is there a trend?
 
-My initial reaction is that there seems to be a noticeable pattern in car thefts over time. There are spikes in car thefts during the warmer months, followed by drops in the colder months. There are also periods where car thefts drop drastically and then rise again, showing short-term fluctuations on top of a seasonal trend. Overall, while there isn’t a perfectly consistent upward or downward trend, the data does suggest seasonal variation in car thefts, with higher incidents in warmer months.
+**WRITE ANSWERS HERE:**
 
 
 ### Task 4: Add the mean, standard error and calculate a margin of error based on a 95% confidence interval
@@ -72,7 +71,7 @@ Let's add some stats to that process - mean and standard deviation - and calcula
 theft_summary <- car_thefts |> 
   summarize(
     mean_thefts = mean(total),
-    sd_thefts = sd(total),
+    sd_thefts = sd(REPLACE_ME),
     months = n(),
     se_thefts = sd_thefts / sqrt(months),
     margin_error = qt(0.975, df = months - 1) * se_thefts,  # Using t-distribution for small sample
@@ -117,11 +116,11 @@ ggplot(aes(x = month, y = total)) +
 
 ### Task 6: Describe the confidence interval.
 
-- What does the 95% confidence interval show here? The 95% confidence interval shows the range of values within which we are 95% confident the true average number of monthly car thefts falls.
+- What does the 95% confidence interval show here? **WRITE ANSWER HERE:**
 
-- What figure(s) accurately reflects the number of car thefts in a typical month? The mean value of about 460 thefts represents the typical number of car thefts in a month. Most months fall within the margin of error (approximately 420–500 thefts), so values in that range can also be considered typical.
+- What figure(s) accurately reflects the number of car thefts in a typical month? **WRITE ANSWER HERE:**
 
-- Propose a headline about the trend in car thefts that is focused on the present and future, but informed by the data you see above. Monthly Car Thefts Average 460, Rising in Warmer Months
+- Propose a headline about the trend in car thefts that is focused on the present and future, but informed by the data you see above. **WRITE ANSWER HERE:**
 
 
 
@@ -152,11 +151,11 @@ t_test_periods
 period_summary <- car_thefts |> 
   group_by(period) |> 
   summarize(
-    mean_thefts = mean(total),
+    mean_thefts = mean(REPLACE_ME),
     sd_thefts = sd(total),
     months = n(),
     se_thefts = sd_thefts / sqrt(months),
-    margin_error = qt(0.975, df = months - 1) * se_thefts, # look at how we calculated this above
+    margin_error = qt(0.975, df = REPLACE_ME - 1) * se_thefts, # look at how we calculated this above
     ci_lower = mean_thefts - margin_error,
     ci_upper = mean_thefts + margin_error
   )
@@ -180,12 +179,12 @@ ggplot(aes(x = period, y = mean_thefts, fill = period)) +
 
 ### Task 8: Reflection
 
-Given the above chart, is the difference between the two periods statistically significant? Based on the chart the difference between the two periods is not statistically significant. The p-value is 0.179, which is greater than the typical significance of 0.05. This means we cannot reject the null hypothesis as  we do not have enough evidence to conclude that car thefts changed significantly between the first and second halves of the data period.
+Given the above chart, is the difference between the two periods statistically significant? Can we reject the null hypothesis? **WRITE ANSWER HERE:**
+
+How would you revise your headline from Task 6, if at all? What would you tell your editor, and what would you expect her to ask you? **WRITE ANSWER HERE:**
 
 
-How would you revise your headline from Task 6, if at all? What would you tell your editor, and what would you expect her to ask you? Car Thefts Fall Slightly In Second Half, but Change May Be Due to Random Variation
 
-I would say to my editor that although there is a decrease in the average number of car thefts from about 490 to 430.8, the statistical test shows that this difference could easily be due to random variation, meaning it’s not strong enough to claim a real change. One thing I would expect my editor to ask is if there are any clear factors that can help explain the slight decrease in car thefts between the two periods.
 
 
 When you are finished, add, commit and push your notebook and submit the URL in ELMS.
