@@ -1,0 +1,66 @@
+---
+title: "Final Project"
+output: html_notebook
+Nia Smith
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+library(readr)
+Billboard_Hot_100 <- read_csv("Billboard Hot 100 Number Ones Database - Data(in).csv")
+```
+
+DATASET OVERVIEW
+This data set contains detailed information about every song that has appeared on the Billboard Hot 100 chart from its inception on August 4, 1958,(https://www.billboard.com/lists/year-end-hot-100-number-one-songs/2024-12/) through January 11, 2025. It includes over 100 columns of data capturing song characteristics, artist demographics, production details, lyrical content, and musical composition features.
+
+For someone visiting the website to explore the history of chart-topping hits, the most relevant columns are ones that tell a clear story about each song’s success, such as Song, Artist, Date, Weeks at Number One and whether the song’s time at the top was Non-Consecutive. These columns help show when certain songs were most popular and which artists achieved major milestones. Other fields like Label, Genre, and Style add useful context about the type of music and the companies behind it, making the data engaging and accessible to general audiences.
+
+For researchers or analysts looking to discover trends over time, the dataset’s columns such as BPM, Key, Energy, Danceability, and Loudness (dB) provide a quantitative look at how the sound of popular music has evolved. Fields describing artist demographics (for example, gender and race), songwriting and production credits, and lyrical features (like topic, explicitness, or language) offer opportunities to show representation, collaboration, and changes in lyrical content. Together, these attributes make the dataset not only a record of chart performance but also a rich resource for analyzing how the music industry and popular taste have shifted over time. For a general viewer columns like these are not as important, which is why they appear later on in the data column set as well
+
+A few important variables are missing that would help account for how music and chart success have changed over time. For instance, data on streaming and sales trends would offer valuable insight into the evolving ways audiences consume music from physical record sales and radio play in the early decades to digital downloads and streaming platforms today. Additionally, detailed documentation on how the Billboard Hot 100’s ranking methodology has evolved including shifts in the weighting of sales, airplay, and streaming would allow for more accurate comparisons between older and newer songs. Without these factors, it becomes difficult to determine whether changes in chart performance reflect true shifts in public taste or simply differences in how chart metrics were calculated across eras. As music streaming has evolved in the past couple decades, this is something that should be explained and accounted for.
+
+```{r}
+Billboard_Hot_100 |>
+  summarize(
+    mean_weeks = mean(`Weeks at Number One`),
+    median_weeks = median(`Weeks at Number One`),
+    min_weeks = min(`Weeks at Number One`),
+    max_weeks = max(`Weeks at Number One`)
+  )
+```
+```{r}
+Billboard_Hot_100 |>
+  count(`CDR Genre`, sort = TRUE)
+```
+
+```{r}
+Billboard_Hot_100 |>
+  summarize(
+    standard_weeks = sd(`Weeks at Number One`)
+    )
+```
+
+Newsworthy Hypothesis
+
+Null Hypothesis: There is no difference in the average number of weeks at #1 between Pop songs and songs of other genres
+
+Hypothesis: Pop songs stay at #1 longer than songs of other genres, on average.
+ - SUPPORTING DATA: Based on the descriptive statistics, Pop songs appear to dominate the chart more frequently than other genres, with 342 entries, followed by Rock with 271 and Funk/Soul at 217. The mean number of weeks at #1 across all songs is approximately 2.94, with a median of 2 weeks, a minimum of 1 week, and a maximum of 19 weeks. The standard deviation is 2.64, meaning that while most songs remain at the top for a short period, there is still variation with some major hits staying at #1 much longer, which creates a wider spread in the data. These figures suggest that while most songs reach the top briefly, certain genres, particularly Pop may consistently remain at #1 longer. This supports the hypothesis that Pop songs spend more time at the top of the chart compared to songs from other genres.
+ 
+
+
+Questions: 
+Do certain genres stay at Number One longer than others?
+  - Based on the descriptive statistics certain genres, particularly Pop, Rock, Funk/Soul, tend to stay at No. 1 longer than others. Genre dominance has shifted over the decades, and testing this relationship could reveal whether some types of music consistently outperform others at the top of the chart.
+  
+Has the average number of weeks a song spends at No. 1 changed from the 1950s to the present day
+  - This could help identify whether the modern streaming era or changes in chart methodology have made it easier or harder for songs to dominate the rankings.
+
+After creating these hypotheses and looking over the descriptive statistics there are two questions and areas I am still curious about. One is whether certain genres truly stay at No. 1 longer because of their musical genere, or if their dominance is influenced by underlying musical qualities. For example, I want to investigate whether factors like BPM, energy, and danceability contribute to why Pop, Rock or Funk/Soul songs tend to remain in the top spot for longer periods. In other words, is genre itself the driver, or are there shared musical attributes across these genres that help explain their performance on the chart? To do so I can test out the correlation values of the data 
+
+I am also interested in understanding how changes in the Billboard Hot 100 reporting over time may be shaping these patterns. Since the chart has evolved from relying primarily on physical sales and radio airplay to incorporating digital downloads and eventually streaming data, I am assuming that shifts in the ranking formula could influence why some songs or genres perform differently across decades (https://www.npr.org/sections/therecord/2013/08/16/207879695/how-the-hot-100-became-americas-hit-barometer). This dataset does not include detailed information about those reporting changes, so I want to explore how those other factors might impact my findings, and whether I need to account for time periods or break the data into eras to interpret trends accurately.
+
