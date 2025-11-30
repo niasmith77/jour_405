@@ -10,7 +10,7 @@ install.packages("ggrepel")
 ```
 https://www.youtube.com/watch?v=qsUb2KjJ7tk : Used this video to install ggrepel which helps out later for my visual aid
 
-#rsw comment: load janitor and clean names on the Billboard data -- will make it easier to perform queries. you will have to adjust your code for the cleaned up coilumn names though
+
 ```{r}
 library(tidyverse)
 library(lubridate)
@@ -55,7 +55,7 @@ Billboard_Hot_100_clean |>
 ```
 I had R summarize the weeks_at_number_one column by calculating the mean, median, minimum, and maximum. This gives a clear sense of the typical amount of time songs spend at #1 and how much that duration varies, while also helping me view the data more clearly since the dataset is so large.
 
-#rsw comment: after each chunk, explain what you did and its significance
+
 
 ```{r}
 Billboard_Hot_100_clean |>
@@ -63,7 +63,6 @@ Billboard_Hot_100_clean |>
 ```
 I used R to count how many songs fall into each ‘CDR Genre,’ sorting the results from most to least frequent. This helps me see which genres dominate the dataset, which is important because I want genre to be a key focus in my hypothesis.
 
-#rsw comment: after each chunk, explain what you did and its significance
 ```{r}
 Billboard_Hot_100_clean |>
   summarize(
@@ -72,7 +71,7 @@ Billboard_Hot_100_clean |>
 ```
 I calculated the standard deviation of ‘Weeks at Number One’ to see how spread out the values are and how much songs differ in the amount of time they spend at #1. This helps me understand whether chart-topping durations are fairly consistent or highly variable, which is important when looking for the patterns in my hypothesis.
 
-#rsw comment: after each chunk, explain what you did and its significance
+
 
 Newsworthy Hypothesis
 
