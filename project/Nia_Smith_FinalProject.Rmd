@@ -1,0 +1,261 @@
+---
+title: "Final Project"
+output: html_notebook
+Nia Smith
+---
+
+
+```{r}
+install.packages("ggrepel")
+```
+https://www.youtube.com/watch?v=qsUb2KjJ7tk : Used this video to install ggrepel which helps out later for my visual aid
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(dplyr)
+library(ggrepel)
+```
+
+```{r}
+library(readr)
+Billboard_Hot_100 <- read_csv("Billboard Hot 100 Number Ones Database - Data(in).csv")
+```
+
+```{r}
+Billboard_Hot_100_clean <- Billboard_Hot_100|> 
+  clean_names() |> 
+  mutate(date_new = dmy(date)) |> 
+  mutate(date_new = if_else(year(date_new) > 2025,  date_new - years(100), date_new)) |> 
+  select(date_new, everything())
+```
+
+This code block cleans up the titles on the column names for easier use, and corrects the date column as well as help to fix the formating of dates in the future (after 2024)
+
+DATASET OVERVIEW
+This data set contains detailed information about every song that has appeared on the Billboard Hot 100 chart from its inception on August 4, 1958,(https://www.billboard.com/lists/year-end-hot-100-number-one-songs/2024-12/) through January 11, 2025. It includes over 100 columns of data capturing song characteristics, artist demographics, production details, lyrical content, and musical composition features.
+
+For someone visiting the website to explore the history of chart-topping hits, the most relevant columns are ones that tell a clear story about each song’s success, such as Song, Artist, Date, Weeks at Number One and whether the song’s time at the top was Non-Consecutive. These columns help show when certain songs were most popular and which artists achieved major milestones. Other fields like Label, Genre, and Style add useful context about the type of music and the companies behind it, making the data engaging and accessible to general audiences.
+
+For researchers or analysts looking to discover trends over time, the dataset’s columns such as BPM, Key, Energy, Danceability, and Loudness (dB) provide a quantitative look at how the sound of popular music has evolved. Fields describing artist demographics (for example, gender and race), songwriting and production credits, and lyrical features (like topic, explicitness, or language) offer opportunities to show representation, collaboration, and changes in lyrical content. Together, these attributes make the dataset not only a record of chart performance but also a rich resource for analyzing how the music industry and popular taste have shifted over time. For a general viewer columns like these are not as important, which is why they appear later on in the data column set as well
+
+A few important variables are missing that would help account for how music and chart success have changed over time. For instance, data on streaming and sales trends would offer valuable insight into the evolving ways audiences consume music from physical record sales and radio play in the early decades to digital downloads and streaming platforms today. Additionally, detailed documentation on how the Billboard Hot 100’s ranking methodology has evolved including shifts in the weighting of sales, airplay, and streaming would allow for more accurate comparisons between older and newer songs. Without these factors, it becomes difficult to determine whether changes in chart performance reflect true shifts in public taste or simply differences in how chart metrics were calculated across eras. As music streaming has evolved in the past couple decades, this is something that should be explained and accounted for.
+
+```{r}
+Billboard_Hot_100_clean |>
+  summarize(
+    mean_weeks = mean(weeks_at_number_one),
+    median_weeks = median(weeks_at_number_one),
+    min_weeks = min(weeks_at_number_one),
+    max_weeks = max(weeks_at_number_one)
+  )
+```
+I had R summarize the weeks_at_number_one column by calculating the mean, median, minimum, and maximum. This gives a clear sense of the typical amount of time songs spend at #1 and how much that duration varies, while also helping me view the data more clearly since the dataset is so large.
+
+
+
+```{r}
+Billboard_Hot_100_clean |>
+  count(cdr_genre, sort = TRUE)
+```
+I used R to count how many songs fall into each ‘CDR Genre,’ sorting the results from most to least frequent. This helps me see which genres dominate the dataset, which is important because I want genre to be a key focus in my hypothesis.
+
+```{r}
+Billboard_Hot_100_clean |>
+  summarize(
+    standard_weeks = sd(weeks_at_number_one)
+    )
+```
+I calculated the standard deviation of ‘Weeks at Number One’ to see how spread out the values are and how much songs differ in the amount of time they spend at #1. This helps me understand whether chart-topping durations are fairly consistent or highly variable, which is important when looking for the patterns in my hypothesis.
+
+
+
+Newsworthy Hypothesis
+
+Null Hypothesis: There is no difference in the average number of weeks at #1 between Pop songs and songs of other genres
+
+Hypothesis: Pop songs stay at #1 longer than songs of other genres, on average.
+ - SUPPORTING DATA: Based on the descriptive statistics, Pop songs appear to dominate the chart more frequently than other genres, with 342 entries, followed by Rock with 271 and Funk/Soul at 217. The mean number of weeks at #1 across all songs is approximately 2.94, with a median of 2 weeks, a minimum of 1 week, and a maximum of 19 weeks. The standard deviation is 2.64, meaning that while most songs remain at the top for a short period, there is still variation with some major hits staying at #1 much longer, which creates a wider spread in the data. These figures suggest that while most songs reach the top briefly, certain genres, particularly Pop may consistently remain at #1 longer. This supports the hypothesis that Pop songs spend more time at the top of the chart compared to songs from other genres.
+ 
+
+
+Questions: 
+Do certain genres stay at Number One longer than others?
+  - Based on the descriptive statistics certain genres, particularly Pop, Rock, Funk/Soul, tend to stay at No. 1 longer than others. Genre dominance has shifted over the decades, and testing this relationship could reveal whether some types of music consistently outperform others at the top of the chart.
+  
+Has the average number of weeks a song spends at No. 1 changed from the 1950s to the present day
+  - This could help identify whether the modern streaming era or changes in chart methodology have made it easier or harder for songs to dominate the rankings.
+
+After creating these hypotheses and looking over the descriptive statistics there are two questions and areas I am still curious about. One is whether certain genres truly stay at No. 1 longer because of their musical genere, or if their dominance is influenced by underlying musical qualities. For example, I want to investigate whether factors like BPM, energy, and danceability contribute to why Pop, Rock or Funk/Soul songs tend to remain in the top spot for longer periods. In other words, is genre itself the driver, or are there shared musical attributes across these genres that help explain their performance on the chart? To do so I can test out the correlation values of the data 
+
+I am also interested in understanding how changes in the Billboard Hot 100 reporting over time may be shaping these patterns. Since the chart has evolved from relying primarily on physical sales and radio airplay to incorporating digital downloads and eventually streaming data, I am assuming that shifts in the ranking formula could influence why some songs or genres perform differently across decades (https://www.npr.org/sections/therecord/2013/08/16/207879695/how-the-hot-100-became-americas-hit-barometer). This dataset does not include detailed information about those reporting changes, so I want to explore how those other factors might impact my findings, and whether I need to account for time periods or break the data into eras to interpret trends accurately.
+
+
+PART 2: Running Tests
+WHAT AM I TESTING TO SEE: Genre dominance has shifted over the decades, and testing this relationship could reveal whether some types of music consistently outperform others at the top of the chart.
+
+Null Hypothesis: Genre dominance has not changed over the decades, meaning the distribution of genres among #1 songs is independent of the decade.
+
+Hypothesis: Genre dominance has changed over the decades, meaning the distribution of genres among #1 songs depends on the decade.
+
+
+THIS CODE BLOCK WAS CREATED WITH HELP FROM AI/Question asked: How can I create a decade column in my dataset going up to this current year?
+```{r}
+
+current_year <- year(Sys.Date())
+
+Billboard_Hot_100_clean <- Billboard_Hot_100_clean |>
+  mutate(
+    parsed_date = parse_date_time(date, orders = c("ymd", "mdy", "dmy")),
+    year_val = year(parsed_date),
+    decade = floor(year_val / 10) * 10
+  ) |>
+  filter(!is.na(decade) & year_val <= current_year) |>
+  select(-parsed_date, -year_val)
+
+# Count #1 songs by genre and decade, then keep top 10 per decade
+top_10_genres_by_decade <- Billboard_Hot_100_clean |>
+  filter(weeks_at_number_one > 0) |>   # Only #1 songs
+  group_by(decade, cdr_genre) |>       # Group by decade and genre
+  summarize(num_songs = n(), .groups = "drop") |>  # Count songs
+  group_by(decade) |>                   # For ranking within each decade
+  slice_max(order_by = num_songs, n = 10) |>       # Keep top 10 genres per decade
+  arrange(decade, desc(num_songs)) |>   # Sort by decade ascending, then num_songs descending
+  ungroup()
+
+top_10_genres_by_decade
+```
+
+
+I asked ChatGPT to help me create this code to analyze the Billboard Hot 100 dataset. The code first parses the date column, which means it reads the text in the column and converts it into proper date objects that R can understand and manipulate (https://www.merriam-webster.com/dictionary/parse). It then extracts the year and calculates the starting year of each decade, removing any rows with missing or future dates. Next, it filters for songs that reached number one, groups them by decade and genre, and counts how many number one songs each genre had in each decade. Within each decade, the code selects the top ten genres and sorts them so that decades are in chronological order and genres are listed from greatest to fewest number one hits. 
+
+This analysis is significant because it allows me to see how musical genres and trends shifted over the decades, highlighting which ones were dominant, to help me study and analyze my hypothesis.
+
+
+```{r}
+anova_result <- aov(weeks_at_number_one ~ cdr_genre * decade, data = Billboard_Hot_100_clean)
+summary(anova_result)
+```
+I ran an ANOVA to see if the number of weeks a song stayed at number one differed across genres and decades.
+
+The strongest finding is that decade has a very large effect on chart longevity. The decade variable has an F value of 79.74 and a p-value of < 2e-16, meaning the probability of this result occurring by chance is essentially zero. This shows that the time period in which a song was released is a much stronger predictor of how long it stayed at #1 than genre.
+
+There is also a significant interaction between genre and decade (F = 2.456, p = 0.00376). This indicates that the impact of genre shifts across decades rather than remaining consistent over time. Certain genres dominated in some eras but not others—for example, Pop and Rock were most prominent in the 1960s, Funk/Soul and Rock in the 1970s–1980s, and genres like Hip Hop and Electronic/Dance became more common among #1 hits in the 1990s and 2000s.
+
+Overall, these results support the idea that genre dominance changes across decades, but they also show that broader decade-level trends have a much larger influence on how long a song remains at the top of the charts.
+
+
+```{r}
+lm_genre_dominance <- lm(num_songs ~ decade * cdr_genre,
+                         data = top_10_genres_by_decade)
+
+summary(lm_genre_dominance)
+```
+ 
+I ran a linear regression model to test whether decade and genre predict changes in genre dominance over time. 
+
+The model does not support my hypothesis. The overall regression is not statistically significant (p = 0.95), and the adjusted R-squared value is –0.4502, indicating that the model explains none of the variation in the number of songs each genre contributed. Nearly all coefficients have extremely high p-values, showing that neither decade nor individual genres meaningfully predict changes in dominance in this model.
+
+The more important issue is the structure of the regression itself. The model includes too many genre categories given the small number of observations. Many genres appear only a few times over the entire dataset, and some such as Hip Hop or Electronic/Dance did not exist in the early decades. This makes it harder for the model to estimate meaningful coefficients across all decades.
+
+A better approach would be to analyze decades separately or to collapse rare or emerging genres into broader groups. This would reduce the number of predictors and allow the model to capture meaningful patterns in genre dominance across time.
+
+
+
+THIS CODE BLOCK WAS CREATED WITH HELP FROM AI/Question asked: can you edit the code so that it can analyze the decades separately and group the obscure genres together so I can get a meaningful measure.
+
+```{r}
+# 1. GROUP OBSCURE GENRES
+# Decide on the genres that appear often enough to keep
+major_genres <- c("Pop", "Rock", "Funk/Soul", "Hip Hop", "Electronic/Dance",
+                  "Folk/Country", "Latin", "Jazz")
+
+top_10_genres_by_decade <- top_10_genres_by_decade %>%
+  mutate(
+    genre_grouped = ifelse(cdr_genre %in% major_genres,
+                           cdr_genre,
+                           "Other"),
+    genre_grouped = factor(genre_grouped)
+  )
+
+# 2. RUN SEPARATE REGRESSIONS FOR EACH DECADE
+decades <- unique(top_10_genres_by_decade$decade)
+
+results_list <- list()
+
+for (d in decades) {
+  
+  decade_data <- filter(top_10_genres_by_decade, decade == d)
+
+  # Skip decades that don't have at least 2 genre groups
+  if (length(unique(decade_data$genre_grouped)) < 2) {
+    message(paste("Skipping decade", d, "- not enough genre categories"))
+    next
+  }
+
+  model <- lm(num_songs ~ genre_grouped, data = decade_data)
+
+  results_list[[as.character(d)]] <- summary(model)
+}
+
+results_list
+```
+I asked ChatGPT to help me create this code to improve the analysis of genre dominance across decades in the Billboard Hot 100 dataset. The code first consolidates less common genres into a single “Other” category while retaining major genres, which reduces model complexity and prevents estimation issues. It then runs separate linear regression models for each decade rather than fitting a single model across all decades. This approach avoids comparing genres that did not exist in earlier periods and ensures that each model is based on sufficient variation within a decade. Decades that do not contain at least two genre categories are excluded to prevent invalid or unreliable regression results.
+
+I ran separate linear regression models for each decade to examine genre dominance after grouping less common genres into an “Other” category and avoided comparing genres that did not exist in earlier decades.
+
+Although several of the decade-specific models appear statistically significant, these results are heavily affected by small sample sizes. In the 1960s, the model has zero residual degrees of freedom, meaning it fits the data perfectly (R-squared = 1.0) simply because there are too few observations, not because the relationship is strong. This part of the model can not provide reliable statistical evidence. The 1970s model shows an adjusted R-squared of 0.9998, suggesting that genre explains almost all of the variation in the number of number one songs within that decade, however this result is based on only three degrees of freedom, which limits how much trust we can place in this model as well. Similar patterns occur in the 1980s and 1990s, where adjusted R-squared values of 0.9979 and 0.9995 indicate a nearly perfect model fit driven by very small samples rather than larger sizes.
+
+In contrast, the models for the 2000s and 2010s show weaker overall evidence that genre explains differences in chart dominance, with p-values of 0.0668 and 0.1057. This suggests that genre alone is not a strong predictor in these decades. The 2020s were excluded entirely because there was not enough variation in genres to run a meaningful model.
+
+Overall, these findings suggest that while genre dominance does change across decades, the small number of observations within each decade makes regression results unreliable. As a result, descriptive comparisons and visualizations provide a clearer and more appropriate way to understand how genre dominance has shifted over time.
+
+
+THIS QUICK SECTION WAS USED BY HELP OF AI/QUESTION ASKED: How do I make my graph show an other catagory with my major_genres data as well
+```{r}
+# Group other genres into "Other"
+plot_data <- top_10_genres_by_decade %>%
+  mutate(
+    genre_grouped = ifelse(cdr_genre %in% major_genres, cdr_genre, "Other"),
+    genre_grouped = factor(genre_grouped, levels = c(major_genres, "Other"))
+  )
+```
+
+
+```{r}
+ggplot(plot_data , aes(x = decade, y = num_songs, color = genre_grouped)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_text_repel(aes(label = num_songs), size = 3, show.legend = FALSE) +
+  
+labs(
+    title = "Shifts in Genre Dominance Across Decades",
+    x = "Decade",
+    y = "Number of #1 Songs",
+    color = "Genre"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right",
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10))
+
+```
+
+I created a scatter plot to visualize how the number of #1 songs for each genre rises or decreases across decades, focusing on the major genres identified earlier while grouping all remaining genres into a single “Other” category. Each point represents the number of #1 songs a genre achieved in a given decade, making it easy to compare trends over time. The x-axis represents the decade, the y-axis shows the number of #1 songs, and colors differentiate genres. Points higher on the y-axis indicate genres that dominated the charts in that decade. For example, Funk/Soul and Rock were strong in the 1960s–1980s, while Pop and Hip Hop became more prominent in later decades. The “Other” category captures minor or less frequent genres, allowing the major trends to stand out clearly. Labeling each point provides exact counts, giving precise insight into changes in popularity. 
+
+Overall, the chart highlights how genre dominance rises and falls over time, supporting the hypothesis that the distribution of #1 songs across genres shifts by decade. This also means the data reject the null hypothesis.
+
+
+STORY PITCH: I want to tell the story of how musical tastes have shifted over the decades by examining Billboard Hot 100 number-one songs. Using data from each decade, we can see which genres dominated the charts, which emerged later, and how overall trends in popular music have evolved. This story will explore the rise and fall of major genres, cultural shifts reflected in music, and how certain genres, like Hip Hop or Electronic/Dance, became prominent over time.
+
+My Main Findings/Analysis: After analyzing the data, it is clear that music tastes have changed significantly across decades, influencing which genres reached number one. Major genres, Pop, Rock, Funk/Soul, Hip Hop, Electronic/Dance, Folk/Country, Latin and Jazz, dominated different eras, while all other genres were grouped into an “Other” category. Funk/Soul and Rock ruled the charts in the 1960s–1980s, Pop and Hip Hop rose in the 1990s–2010s, and Electronic/Dance gained influence more recently. These patterns show that the distribution of number-one songs across genres shifts noticeably by decade, reflecting evolving cultural trends.
+
+Potential Problems: Some decades have limited data, which makes regression results unreliable. Early representation of emerging genres, like Hip Hop, is limited, and grouping minor genres into “Other” simplifies visualization but may hide smaller emerging trends.
+
+Reporting Plan
+The story will feature a scatter plot as the lead visual, highlighting the major genres and grouping all other genres into “Other,” with labeled points showing the exact number of #1 songs per decade. 
+
+The supporting analysis will describe how specific genres rise and fall over time, illustrating shifts in genre dominance. To provide context, the narrative will link these changes to broader cultural and technological trends, such as the influence of radio and streaming platforms, (which was referenced earlier in Part 1). Finally, the story will include a  section to acknowledge limitations, such as small sample sizes in certain decades and the grouping of minor genres into the “Other” category.
+
+Overall, this story will give readers a clear, engaging view of how musical tastes have evolved over time. Combining visuals with narrative context will show which genres shaped the Billboard Hot 100 and highlight how genre dominance rises and falls across decades.
